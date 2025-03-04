@@ -13,143 +13,158 @@
 extend: grid5000/ubuntu2204-x64-common.yaml
 
 global:
-      ### Uncomment and adapt the global variables below as needed
+        ### Uncomment and adapt the global variables below as needed
 
-      ## Export format to generate
-      # appliance_formats: qcow2 tar.zst
+        ## Export format to generate
+        # appliance_formats: qcow2 tar.zst
 
-      ## Environment description customization
-      ## Author
-      # g5k_author: "john.doe@grid5000.fr"
-      ## Version
-      # g5k_version: 1
-      ## Environment image path and compression
-      # g5k_tar_path: local:///path/to/your/image
-      # g5k_tar_compression: "zstd"
-      ## Environment postinstall path, compression, and script command
-      # g5k_postinst_path: server:///grid5000/postinstalls/g5k-postinstall.tgz
-      # g5k_postinst_compression: "gzip"
-      # g5k_postinst_script: g5k-postinstall --net debian
-      ## Environment kernel path and params
-      # g5k_kernel_path: "/vmlinuz"
-      # g5k_initrd_path: "/initrd.img"
-      # g5k_kernel_params: ""
-      ## Environment visibility
-      # g5k_visibility: "shared"
+        ## Environment description customization
+        ## Author
+        # g5k_author: "john.doe@grid5000.fr"
+        ## Version
+        # g5k_version: 1
+        ## Environment image path and compression
+        # g5k_tar_path: local:///path/to/your/image
+        # g5k_tar_compression: "zstd"
+        ## Environment postinstall path, compression, and script command
+        # g5k_postinst_path: server:///grid5000/postinstalls/g5k-postinstall.tgz
+        # g5k_postinst_compression: "gzip"
+        # g5k_postinst_script: g5k-postinstall --net debian
+        ## Environment kernel path and params
+        # g5k_kernel_path: "/vmlinuz"
+        # g5k_initrd_path: "/initrd.img"
+        # g5k_kernel_params: ""
+        ## Environment visibility
+        # g5k_visibility: "shared"
 
-      ## Other parameters can be changed, see kameleon info ubuntu2204-dont-throw-the-stack.yaml
+        ## Other parameters can be changed, see kameleon info ubuntu2204-dont-throw-the-stack.yaml
 
 bootstrap:
-      ### The bootstrap section takes in charge the initial installation of the
-      ## system (distribution installation). No modification should be needed here.
-      - "@base"
+        ### The bootstrap section takes in charge the initial installation of the
+        ## system (distribution installation). No modification should be needed here.
+        - "@base"
 
 setup:
-      ### The setup section is where customizations of the system take place.
-      ## We can request steps from the extended recipe to be executed
-      - "@base"
-      ## We add steps required by our customization after or before @base. Use
-      ## kameleon dryrun ubuntu2204-dont-throw-the-stack.yaml to see the resulting steps in the build.
-      ## The following is given as example only, replace with your steps.
-      - init:
-              - create_home:
-                      - exec_in: >
-                              mkdir /home/work
-              - get_scripts:
-                      - download_file_in:
-                              - http://public.sophia.grid5000.fr/~ayanovsk/dont-throw-the-stack/update-linux-tools.sh
-                              - /home/work/update-linux-tools.sh
+        ### The setup section is where customizations of the system take place.
+        ## We can request steps from the extended recipe to be executed
+        - "@base"
+        ## We add steps required by our customization after or before @base. Use
+        ## kameleon dryrun ubuntu2204-dont-throw-the-stack.yaml to see the resulting steps in the build.
+        ## The following is given as example only, replace with your steps.
+        - init:
+                  - create_home:
+                            - exec_in: >
+                                      mkdir /home/work
+                  - get_scripts:
+                            - download_file_in:
+                                      - http://public.sophia.grid5000.fr/~ayanovsk/dont-throw-the-stack/update-linux-tools.sh
+                                      - /home/work/update-linux-tools.sh
 
-              - get_nic_driver:
-                      - download_file_in:
-                              - http://public.sophia.grid5000.fr/~ayanovsk/dont-throw-the-stack/connectx3-driver
-                              - /home/work/connectx3-driver
+                  - get_nic_driver:
+                            - download_file_in:
+                                      - http://public.sophia.grid5000.fr/~ayanovsk/dont-throw-the-stack/connectx3-driver
+                                      - /home/work/connectx3-driver
 
-      - general_dep:
-              - install_dep:
-                      - exec_in: >
-                              apt-get update
-                      - exec_in: >
-                              DEBIAN_FRONTEND=noninteractive apt-get install -y kexec-tools libpci-dev pciutils gettext libelf-dev flex fakeroot bc ncurses-dev xz-utils build-essential wget libssl-dev python3-pip autotools-dev automake bison
-      - install_mutilate:
-              - mutilate_dep:
-                      - exec_in: |
-                              apt-get install -y libevent-dev libzmq3-dev
-              - mutilate_install:
-                      - exec_in: |
-                              git clone https://github.com/shaygalon/memcache-perf.git
-                              cd memcache-perf
-                              make
-                              mv mcperf /bin/mutilate
-      - install_fstack:
-              - install_dep:
-                      - exec_in: |
-                              apt-get install -y libnuma-dev libpcap-dev meson
-                              pip3 install pyelftools --upgrade
-              - compile_and_install:
-                      - exec_in: |
-                              git clone https://github.com/F-Stack/f-stack.git /home/work/f-stack
-                              cd /home/work/f-stack/dpdk
-                              meson setup build
-                              ninja -C build -j $(nproc)
-                              sudo ninja -C build install
-                              cd ../lib
-                              make -j $(nproc)
-                              sudo make install
+                  - get_load_driver:
+                            - download_file_in:
+                                      - http://public.sophia.grid5000.fr/~ayanovsk/dont-throw-the-stack/load-driver.sh
+                                      - /home/work/load-driver.sh
 
-      - install_memcached_fstack:
-              - compile:
-                      - exec_in: |
-                              git clone https://git.uwaterloo.ca/p5cai/memcached-fstack.git /home/work/memcached-fstack
-                              wget -O /tmp/memcached-hash.patch https://github.com/memcached/memcached/commit/63b8e76067523a02a3e0215db1aef0b34edcf708.patch
-                              cd /home/work/memcached-fstack
-                              git apply /tmp/memcached-hash.patch
-                              ./autogen.sh
-                              ./configure
-                              make -j $(nproc)
-                      - breakpoint: "check memcached"
+                  - get_netstack_conf:
+                            - download_file_in:
+                                      - http://public.sophia.grid5000.fr/~ayanovsk/dont-throw-the-stack/netstack-config.patch
+                                      - /home/work/netstack-config.patch
 
-      - install_memcached_fstack:
-              - compile:
-                      - exec_in: |
-                              git clone https://github.com/memcached/memcached.git -b 1.6.9 /home/work/memcached
-                              cd /home/work/memcached
-                              ./autogen.sh
-                              ./configure
-                              make -j $(nproc)
+                  - get_before_work:
+                            - download_file_in:
+                                      - http://public.sophia.grid5000.fr/~ayanovsk/dont-throw-the-stack/before-work.sh
+                                      - /home/work/before-work.sh
+        - general_dep:
+                  - install_dep:
+                            - exec_in: >
+                                      apt-get update
+                            - exec_in: >
+                                      DEBIAN_FRONTEND=noninteractive apt-get install -y kexec-tools libpci-dev pciutils gettext libelf-dev flex fakeroot bc ncurses-dev xz-utils build-essential wget libssl-dev python3-pip autotools-dev automake bison
+        - install_mutilate:
+                  - mutilate_dep:
+                            - exec_in: |
+                                      apt-get install -y libevent-dev libzmq3-dev
+                  - mutilate_install:
+                            - exec_in: |
+                                      git clone https://github.com/shaygalon/memcache-perf.git
+                                      cd memcache-perf
+                                      make
+                                      mv mcperf /bin/mutilate
+        - install_fstack:
+                  - install_dep:
+                            - exec_in: |
+                                      apt-get install -y libnuma-dev libpcap-dev meson
+                                      pip3 install pyelftools --upgrade
+                  - compile_and_install:
+                            - exec_in: |
+                                      git clone https://github.com/F-Stack/f-stack.git /home/work/f-stack
+                                      cd /home/work/f-stack/dpdk
+                                      meson setup build
+                                      ninja -C build -j $(nproc)
+                                      sudo ninja -C build install
+                                      cd ../lib
+                                      make -j $(nproc)
+                                      sudo make install
 
-      - get_experiences:
-              - get_repo:
-                      - exec_in: |
-                              git clone https://git.uwaterloo.ca/p5cai/netstack-exp.git /home/work/netstack-exp
-      - install_linux_tools:
-              - get_linux_repo:
-                      - exec_in: |
-                              wget https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.15.79.tar.xz -O /home/work/linux-5.15.79.tar.xz
-                              tar -xf /home/work/linux-5.15.79.tar.xz -C /home/work
-              #   - linux_compile_kernel:
-              #         - exec_in: |
-              #               cd linux-5.15.79
-              #               cp -v /boot/config-$(uname -r) .config
-              #               make menuconfig
-              #               scripts/config --disable SYSTEM_TRUSTED_KEYS
-              #               scripts/config --disable SYSTEM_REVOCATION_KEYS
-              #               make -j $(nproc)
-              #               make modules_install
-              #               make install
-              #   - linux_tools_install:
-              #         - exec_in: |
-              #               cd linux-5.15.79/tools/perf
-              #               make
-              #               make install
-              #               cd ../power/cpupower
-              #               make
-              #               make install
-              #               cd ../x86/x86_energy_perf_policy
-              #               make
-              #               make install
+        - install_memcached_fstack:
+                  - compile:
+                            - exec_in: |
+                                      git clone https://git.uwaterloo.ca/p5cai/memcached-fstack.git /home/work/memcached-fstack
+                                      wget -O /tmp/memcached-hash.patch https://github.com/memcached/memcached/commit/63b8e76067523a02a3e0215db1aef0b34edcf708.patch
+                                      cd /home/work/memcached-fstack
+                                      git apply /tmp/memcached-hash.patch
+                                      ./autogen.sh
+                                      ./configure
+                                      make -j $(nproc)
+                    #       - breakpoint: "check memcached"
+
+        - install_memcached:
+                  - compile:
+                            - exec_in: |
+                                      git clone https://github.com/memcached/memcached.git -b 1.6.9 /home/work/memcached
+                                      cd /home/work/memcached
+                                      ./autogen.sh
+                                      ./configure
+                                      make -j $(nproc)
+
+        - get_experiences:
+                  - get_repo:
+                            - exec_in: |
+                                      git clone https://git.uwaterloo.ca/p5cai/netstack-exp.git /home/work/netstack-exp
+                                      git apply directory=/home/work/netstack-exp /home/work/netstack-config.patch
+        - install_linux_tools:
+                  - get_linux_repo:
+                            - exec_in: |
+                                      wget https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.15.79.tar.xz -O /home/work/linux-5.15.79.tar.xz
+                                      tar -xf /home/work/linux-5.15.79.tar.xz -C /home/work
+                  #   - linux_compile_kernel:
+                  #         - exec_in: |
+                  #               cd linux-5.15.79
+                  #               cp -v /boot/config-$(uname -r) .config
+                  #               make menuconfig
+                  #               scripts/config --disable SYSTEM_TRUSTED_KEYS
+                  #               scripts/config --disable SYSTEM_REVOCATION_KEYS
+                  #               make -j $(nproc)
+                  #               make modules_install
+                  #               make install
+                  #   - linux_tools_install:
+                  #         - exec_in: |
+                  #               cd linux-5.15.79/tools/perf
+                  #               make
+                  #               make install
+                  #               cd ../power/cpupower
+                  #               make
+                  #               make install
+                  #               cd ../x86/x86_energy_perf_policy
+                  #               make
+                  #               make install
 
 export:
-      ### The export section takes in charge the export of your customized Grid'5000
-      ## environment. No modification should be needed here.
-      - "@base"
+        ### The export section takes in charge the export of your customized Grid'5000
+        ## environment. No modification should be needed here.
+        - "@base"
