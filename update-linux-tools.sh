@@ -28,6 +28,4 @@ if [[ $KERNEL_NAME == *"generic"* ]]; then
     linux-tools-from-apt
 else
     linux-tools-from-repo
-else
-    echo "Unknown kernel name: $KERNEL_NAME"
 fi
