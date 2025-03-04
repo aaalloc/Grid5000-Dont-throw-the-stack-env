@@ -1,0 +1,138 @@
+diff --git a/analyze/perf_breakdown.sh b/analyze/perf_breakdown.sh
+index 035927c..6d13c62 100755
+--- a/analyze/perf_breakdown.sh
++++ b/analyze/perf_breakdown.sh
+@@ -2,7 +2,7 @@
+ 
+ PWD_ORIG="$PWD"
+ 
+-PERF=perf
++source ../configs/base.sh
+ 
+ if [ -e "../configs/$(uname -r).sh" ]; then
+     echo "Loading kernel-specific config for $(uname -r)"
+diff --git a/configs/base.sh b/configs/base.sh
+index 05a0da5..634f633 100644
+--- a/configs/base.sh
++++ b/configs/base.sh
+@@ -1,13 +1,17 @@
+ IS_CUSTOM_KERNEL=false
+-CPUPOWER=cpupower
+-X86_ENERGY_PERF_POLICY=x86_energy_perf_policy
+-PERF=perf
+-FSTACK_SRC=/home/p5cai/workspace/f-stack
+-CALADAN_SRC=/home/p5cai/workspace/caladan
++KERNEL_PATH=/home/work/linux-5.15.79
++
++CPUPOWER=$KERNEL_PATH/tools/cpupower/cpupower
++X86_ENERGY_PERF_POLICY=$KERNEL_PATH/tools/power/x86/x86_energy_perf_policy/x86_energy_perf_policy
++PERF=$KERNEL_PATH/tools/perf/perf
++export LD_LIBRARY_PATH="$LD_LIBRARY_PATH":"$KERNEL_SRC/tools/power/cpupower"
++
++FSTACK_SRC=/home/work/f-stack
++CALADAN_SRC=/home/work/caladan
+ 
+ # Execute all SSH commands under this user
+ # so that we don't need ssh keys for root
+-SSH_USER=p5cai
++SSH_USER=root
+ 
+ # Default No. of threads
+ # Note that not all experiments honor this setting
+diff --git a/configs/memcached.sh b/configs/memcached.sh
+index 0b84614..18480f1 100644
+--- a/configs/memcached.sh
++++ b/configs/memcached.sh
+@@ -1,3 +1,3 @@
+-MEMCACHED=/home/p5cai/workspace/memcached/memcached
+-MEMCACHED_FSTACK=/home/p5cai/workspace/memcached-fstack/memcached
+-MEMCACHED_CALADAN=/home/p5cai/workspace/memcached-caladan/memcached
++MEMCACHED=/home/work/memcached/memcached
++MEMCACHED_FSTACK=/home/work/memcached-fstack/memcached
++MEMCACHED_CALADAN=/home/work/memcached-caladan/memcached
+diff --git a/configs/mutilate.sh b/configs/mutilate.sh
+index c43ed77..0ce2622 100644
+--- a/configs/mutilate.sh
++++ b/configs/mutilate.sh
+@@ -1,9 +1,15 @@
+ # The server IP (the current machine)
+-MEMSERVER_IP=192.168.199.1
++MEMSERVER_IP=130.190.44.231
+ # List of Mutilate clients
+-MEMCLIENTS=tilly03,tilly04,tilly05,tilly06,tilly07,tilly08
+-MEMCTRL=tilly02
++#MEMCLIENTS=tilly03,tilly04,tilly05,tilly06,tilly07,tilly08
++MEMCLIENTS=
++
++#MEMCTRL=tilly02
++MEMCTRL=
++
+ # Command shorthands
+-MUTILATE="ssh $MEMCTRL taskset -c 0-7 mutilate -T8"
++#MUTILATE="ssh $MEMCTRL taskset -c 0-7 mutilate -T8"
++MUTILATE="taskset -c 0-7 mutilate -T8"
++
+ MUTILATE+=" -s $MEMSERVER_IP -d1 -K fb_key -V fb_value -i fb_ia -r1000000"
+ MUTCLIENTS=$(for m in $(echo $MEMCLIENTS|tr , ' '); do echo " -a $m";done)
+diff --git a/configs/nginx.sh b/configs/nginx.sh
+index fde0a35..9bbb9d8 100644
+--- a/configs/nginx.sh
++++ b/configs/nginx.sh
+@@ -1,4 +1,4 @@
+ NGINX=/opt/nginx/sbin/nginx
+ NGINX_FSTACK=/opt/nginx_fstack/sbin/nginx
+ NGINX_CLIENT=tilly02
+-NGINX_HOST=192.168.199.1
++NGINX_HOST=0.0.0.0
+diff --git a/configs/nic.sh b/configs/nic.sh
+index 0f59984..5e7e3cc 100644
+--- a/configs/nic.sh
++++ b/configs/nic.sh
+@@ -1,2 +1,2 @@
+-NET_IF=eno3d1
++NET_IF=wlp0s20f3
+ NET_IF_MOD=mlx4
+diff --git a/experiments/memcached.shared.sh b/experiments/memcached.shared.sh
+index 56e09b6..ead312f 100644
+--- a/experiments/memcached.shared.sh
++++ b/experiments/memcached.shared.sh
+@@ -13,7 +13,8 @@ load_config() {
+ 
+ cleanup_mutilate() {
+     echo "Killing all mutilate processes on clients"
+-    sudo -u $SSH_USER pdsh -R ssh -w $MEMCLIENTS pkill mutilate || true
++    #sudo -u $SSH_USER pdsh -R ssh -w $MEMCLIENTS pkill mutilate || true
++    pkill mutilate || true
+ }
+ 
+ cleanup_memcached() {
+@@ -44,13 +45,16 @@ start_memcached() {
+ start_mutilate() {
+     echo "Starting mutilate"
+     # Mutilate client agents always run on 8 cores
+-    sudo -u $SSH_USER pdsh -R ssh -w $MEMCLIENTS taskset -c 0-7 mutilate -A -T 8 2>/dev/null & sleep 1
++    # sudo -u $SSH_USER pdsh -R ssh -w $MEMCLIENTS taskset -c 0-7 mutilate -A -T 8 2>/dev/null & sleep 1
++    taskset -c 0-7 mutilate -A -T 8 2>/dev/null & sleep 1
+ }
+ 
+ warmup() {
+     echo "Warming up Memcached..."
+-    sudo -u $SSH_USER $MUTILATE --loadonly
+-    sudo -u $SSH_USER $MUTILATE --noload -c100 $MUTCLIENTS -t10 -u 0
++    #sudo -u $SSH_USER $MUTILATE --loadonly
++    #sudo -u $SSH_USER $MUTILATE --noload -c100 $MUTCLIENTS -t10 -u 0
++    $MUTILATE --loadonly
++    $MUTILATE --noload -c100 $MUTCLIENTS -t10 -u 0
+ }
+ 
+ run_mutilate() {
+@@ -63,7 +67,8 @@ run_mutilate() {
+     echo "Running mutilate with $CONNS connections per agent (core) and QPS = $QPS"
+     perf_stat_start "$1"
+     extra_data_start $MEMCTRL,$MEMCLIENTS
+-    sudo -u $SSH_USER $MUTILATE --noload -c$CONNS $MUTCLIENTS -t30 -u 0 -q $QPS | tee $DATA_OUT/$1$EXP_AUX_SUFFIX.txt
++    #sudo -u $SSH_USER $MUTILATE --noload -c$CONNS $MUTCLIENTS -t30 -u 0 -q $QPS | tee $DATA_OUT/$1$EXP_AUX_SUFFIX.txt
++    $MUTILATE --noload -c$CONNS $MUTCLIENTS -t30 -u 0 -q $QPS | tee $DATA_OUT/$1$EXP_AUX_SUFFIX.txt
+     extra_data_stop $MEMCTRL,$MEMCLIENTS "$1"
+     perf_stat_stop
+     NO_RUNS=$((NO_RUNS + 1))
