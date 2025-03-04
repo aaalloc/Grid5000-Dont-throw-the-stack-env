@@ -3,7 +3,7 @@ Simple:
   reboot:
     pre-ops:
       - action: send
-        file: /home/ayanovsk/public/dont-throw-the-stack/5.15.79-kernel-polling-change
+        file: /home/ayanovsk/public/dont-throw-the-stack/v5.15.79-kernel-polling-change
         destination: $KADEPLOY_TMP_DIR
         name: send_custom_kernel-img
       - action: send
