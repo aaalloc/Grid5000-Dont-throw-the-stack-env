@@ -136,7 +136,8 @@ setup:
                   - get_repo:
                             - exec_in: |
                                       git clone https://git.uwaterloo.ca/p5cai/netstack-exp.git /home/work/netstack-exp
-                                      git apply directory=/home/work/netstack-exp /home/work/netstack-config.patch
+                                      cd /home/work/netstack-exp 
+                                      git apply /home/work/netstack-config.patch
         - install_linux_tools:
                   - get_linux_repo:
                             - exec_in: |
