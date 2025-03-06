@@ -102,6 +102,7 @@ setup:
                             - exec_in: |
                                       git clone https://github.com/leverich/mutilate /home/work/mutilate
                                       cd /home/work/mutilate
+                                      git apply /home/work/mutilate-python3.patch
                                       scons
                                       mv mutilate /bin/mutilate
         - install_fstack:
