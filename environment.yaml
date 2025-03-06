@@ -60,11 +60,20 @@ setup:
                                       - http://public.sophia.grid5000.fr/~ayanovsk/dont-throw-the-stack/update-linux-tools.sh
                                       - /home/work/update-linux-tools.sh
 
-                  - get_nic_driver:
+                  - get_before_work:
                             - download_file_in:
-                                      - http://public.sophia.grid5000.fr/~ayanovsk/dont-throw-the-stack/connectx3-driver
-                                      - /home/work/connectx3-driver
+                                      - http://public.sophia.grid5000.fr/~ayanovsk/dont-throw-the-stack/mutilate-python3.patch
+                                      - /home/work/mutilate-python3.patch
 
+                  - get_nic_driver:
+                            - exec_in: >
+                                      mkdir /home/work/connectx3-driver
+                            - download_file_in:
+                                      - http://public.sophia.grid5000.fr/~ayanovsk/dont-throw-the-stack/connectx3-driver/mlx4_core.ko
+                                      - /home/work/connectx3-driver/mlx4_core.ko
+                            - download_file_in:
+                                      - http://public.sophia.grid5000.fr/~ayanovsk/dont-throw-the-stack/connectx3-driver/mlx4_en.ko
+                                      - /home/work/connectx3-driver/mlx4_en.ko
                   - get_load_driver:
                             - download_file_in:
                                       - http://public.sophia.grid5000.fr/~ayanovsk/dont-throw-the-stack/load-driver.sh
@@ -84,17 +93,17 @@ setup:
                             - exec_in: >
                                       apt-get update
                             - exec_in: >
-                                      DEBIAN_FRONTEND=noninteractive apt-get install -y kexec-tools libpci-dev pciutils gettext libelf-dev flex fakeroot bc ncurses-dev xz-utils build-essential wget libssl-dev python3-pip autotools-dev automake bison
+                                      DEBIAN_FRONTEND=noninteractive apt-get install -y  kexec-tools libpci-dev pciutils gettext libelf-dev flex fakeroot bc ncurses-dev xz-utils build-essential wget libssl-dev python3-pip autotools-dev automake bison
         - install_mutilate:
                   - mutilate_dep:
                             - exec_in: |
-                                      apt-get install -y libevent-dev libzmq3-dev
+                                      apt-get install -y scons libevent-dev gengetopt libzmq3-dev
                   - mutilate_install:
                             - exec_in: |
-                                      git clone https://github.com/shaygalon/memcache-perf.git
-                                      cd memcache-perf
-                                      make
-                                      mv mcperf /bin/mutilate
+                                      git clone https://github.com/leverich/mutilate /home/work/mutilate
+                                      cd /home/work/mutilate
+                                      scons
+                                      mv mutilate /bin/mutilate
         - install_fstack:
                   - install_dep:
                             - exec_in: |
