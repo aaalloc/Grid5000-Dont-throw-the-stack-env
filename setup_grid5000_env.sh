@@ -9,11 +9,13 @@ function retrieve_repo() {
     GRID5000_SITE=$1
     REPO_URL="https://github.com/aaalloc/Grid5000-Dont-throw-the-stack-env"
 
-    cd public
-    git clone $REPO_URL dont-throw-the-stack
-    cd ~
-    ln -s public/dont-throw-the-stack/environment.yaml environment.yaml
-    ln -s public/dont-throw-the-stack/mutilate-environment.yaml mutilate-environment.yaml
+    if [ -d "~/public/dont-throw-the-stack" ]; then
+        git -C ~/public/dont-throw-the-stack pull
+    else
+        git clone $REPO_URL ~/public/dont-throw-the-stack
+    fi
+    ln -s ~/public/dont-throw-the-stack/environment.yaml environment.yaml
+    ln -s ~/public/dont-throw-the-stack/mutilate-environment.yaml mutilate-environment.yaml
 }
 
 function build_environment() {
@@ -21,23 +23,26 @@ function build_environment() {
 
     # arg1: grid5000 site
     GRID5000_SITE=$1
-    ENV_PATH=$2
+    ENV_NAME=$2
 
-    ssh $GRID5000_SITE << EOF
-    $(typeset -f)
+    # TODO: fix hardcoded values of name
+
+    ssh -tt $GRID5000_SITE << EOF
+    $(typeset -f retrieve_repo)
     retrieve_repo
 
-    oarsub -l host=1,walltime=1 "
-        kameleon repository add grid5000 https://gitlab.inria.fr/grid5000/environments-recipes.git
-        kameleon repository update grid5000
-        kameleon template import grid5000/ubuntu2204-x64-common
+    oarsub -I
+    kameleon repository add grid5000 https://gitlab.inria.fr/grid5000/environments-recipes.git
+    kameleon repository update grid5000
+    kameleon template import grid5000/ubuntu2204-x64-common
 
-        kameleon build $ENV_PATH
-    "
+    kameleon build $ENV_NAME.yaml
+    sed -i 's|server:///path/to/your/image|local:///home/ayanovsk/build//$ENV_NAME/$ENV_NAME.tar.zst|' build/$ENV_NAME/$ENV_NAME.dsc
+    exit
 EOF
 }
 
-ENV_PATH="mutilate-environment.yaml"
+ENV_NAME="mutilate-environment"
 GRID5000_SITE="grenoble"
 
-build_environment $GRID5000_SITE $ENV_PATH
+build_environment $GRID5000_SITE $ENV_NAME

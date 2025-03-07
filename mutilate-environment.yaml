@@ -68,14 +68,14 @@ setup:
         - install_mutilate:
                   - mutilate_dep:
                             - exec_in: |
-                                      DEBIAN_FRONTEND=noninteractive apt-get install -y scons libevent-dev gengetopt libzmq3-dev build-essential
+                                      DEBIAN_FRONTEND=noninteractive apt-get install -y net-tools scons libevent-dev gengetopt libzmq3-dev build-essential
                   - mutilate_install:
                             - exec_in: |
                                       git clone https://github.com/leverich/mutilate /home/work/mutilate
                                       cd /home/work/mutilate
                                       git apply /home/work/mutilate-python3.patch
                                       scons
-                                      mv mutilate /bin/mutilatel
+                                      mv mutilate /bin/mutilate
 
 export:
         ### The export section takes in charge the export of your customized Grid'5000

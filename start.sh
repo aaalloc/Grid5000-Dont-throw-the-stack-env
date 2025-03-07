@@ -19,11 +19,11 @@ function start_host_node() {
     CLIENT_NODES=$2
     DURATION=$3
     HOST_ENV_PATH=$4
-    ssh $GRID5000_SITE /bin/bash << EOF
+    ssh -tt $GRID5000_SITE << EOF
     oarsub -I -t deploy -l host=1,walltime=$DURATION
     kadeploy3 -a $HOST_ENV_PATH
     kareboot3 simple --custom-steps public/dont-throw-the-stack/v5.15.79-kernel-polling-load.yml
-    ssh root@$(oarprint host) /bin/bash << EOF
+    ssh -tt root@\$(oarprint host) << EOF
         bash /home/work/before-work.sh
         exec env NODES="$CLIENT_NODES" /bin/bash
     EOF 
@@ -37,18 +37,38 @@ function start_client_nodes {
     # arg2: number of clients
     # arg3: duration of holding hosts
     # arg4: client environment path for kadeploy3
+
+    # return: controller node and client nodes as "controller_node client_node1 client_node2 ..."
     GRID5000_SITE=$1
     NUM_CLIENTS=$2
     DURATION=$3
     CLIENT_ENV_PATH=$4
-    NODES=$(ssh $GRID5000_SITE /bin/bash << EOF 
+    # TODO: fix this, it will stuck and no follow execution
+    # an idea will be to run this not in interactive (remember oarsub -S with #OAR....)
+    # then wait that they are responsive and then continue
+
+    NODES=$(ssh -tt $GRID5000_SITE << EOF 
     oarsub -I -t deploy -l host=$NUM_CLIENTS,walltime=$DURATION
     kadeploy3 -a $CLIENT_ENV_PATH
     oarprint host | paste -sd ","
 EOF
 )
+    # in nodes, we need to have only one node as a controller for further test, so we will choose the first one and split the rest
+    CONTROLLER_NODE=$(echo $NODES | cut -d "," -f 1)
+    CLIENT_NODES=$(echo $NODES | cut -d "," -f 2-)
+ 
+    # here we will install ssh keys for the client nodes into the controller node 
+    # so the controller node can ssh into the client nodes
+    for NODE in $CLIENT_NODES;
+    do
+        ssh root@$NODE "ssh-keygen"
+        PUB_KEY=$(ssh root@$NODE "cat ~/.ssh/id_rsa.pub")
+        ssh root@$CONTROLLER_NODE "echo $PUB_KEY >> ~/.ssh/authorized_keys"
+    done
 
-    echo $NODES
+
+    # here we will have to return the controller node and the client nodes
+    echo "$CONTROLLER_NODE $CLIENT_NODES"
 }
 
 HOST_GRID5000_SITE="sophia"

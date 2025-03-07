@@ -93,7 +93,7 @@ setup:
                             - exec_in: >
                                       apt-get update
                             - exec_in: >
-                                      DEBIAN_FRONTEND=noninteractive apt-get install -y  kexec-tools libpci-dev pciutils gettext libelf-dev flex fakeroot bc ncurses-dev xz-utils build-essential wget libssl-dev python3-pip autotools-dev automake bison
+                                      DEBIAN_FRONTEND=noninteractive apt-get install -y net-tools kexec-tools libpci-dev pciutils gettext libelf-dev flex fakeroot bc ncurses-dev xz-utils build-essential wget libssl-dev python3-pip autotools-dev automake bison
         - install_mutilate:
                   - mutilate_dep:
                             - exec_in: |
@@ -153,27 +153,6 @@ setup:
                             - exec_in: |
                                       wget https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.15.79.tar.xz -O /home/work/linux-5.15.79.tar.xz
                                       tar -xf /home/work/linux-5.15.79.tar.xz -C /home/work
-                  #   - linux_compile_kernel:
-                  #         - exec_in: |
-                  #               cd linux-5.15.79
-                  #               cp -v /boot/config-$(uname -r) .config
-                  #               make menuconfig
-                  #               scripts/config --disable SYSTEM_TRUSTED_KEYS
-                  #               scripts/config --disable SYSTEM_REVOCATION_KEYS
-                  #               make -j $(nproc)
-                  #               make modules_install
-                  #               make install
-                  #   - linux_tools_install:
-                  #         - exec_in: |
-                  #               cd linux-5.15.79/tools/perf
-                  #               make
-                  #               make install
-                  #               cd ../power/cpupower
-                  #               make
-                  #               make install
-                  #               cd ../x86/x86_energy_perf_policy
-                  #               make
-                  #               make install
 
 export:
         ### The export section takes in charge the export of your customized Grid'5000
