@@ -68,7 +68,7 @@ setup:
         - install_mutilate:
                   - mutilate_dep:
                             - exec_in: |
-                                      DEBIAN_FRONTEND=noninteractive apt-get install -y scons libevent-dev gengetopt libzmq3-dev
+                                      DEBIAN_FRONTEND=noninteractive apt-get install -y scons libevent-dev gengetopt libzmq3-dev build-essential
                   - mutilate_install:
                             - exec_in: |
                                       git clone https://github.com/leverich/mutilate /home/work/mutilate
