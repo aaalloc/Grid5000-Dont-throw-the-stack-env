@@ -11,16 +11,18 @@ function get_current_interface_ip() {
     echo $IP
 }
 
-HOST_PATH=~/.ok_exp_host
-CLIENTS_PATH=~/.ok_nodes_client
+HOST_NODE_PATH=~/.ok_nodes_host
+CLIENTS_NODES_PATH=~/.ok_nodes_client
 
-kadeploy3 ubuntu2204-min --output-ok-nodes $HOST_PATH
-EXP_NODE=$(cat $HOST_PATH | head -n 1)
-NODES=$(cat $CLIENTS_PATH | tr "," "\n")
+kadeploy3 -a environment.yaml --output-ok-nodes $HOST_NODE_PATH
+
+EXP_NODE=$(cat $HOST_NODE_PATH | head -n 1)
+NODES=$(cat $CLIENTS_NODES_PATH | tr "," "\n")
+
+ssh root@$EXP_NODE "ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa <<< y"
+PUB_KEY=$(ssh root@$EXP_NODE "cat ~/.ssh/id_rsa.pub")
 for NODE in $NODES;
 do
-    ssh root@$NODE "ssh-keygen"
-    PUB_KEY=$(ssh root@$NODE "cat ~/.ssh/id_rsa.pub")
-    ssh root@$EXP_NODE "echo $PUB_KEY >> ~/.ssh/authorized_keys"
+    ssh root@$NODE "echo $PUB_KEY >> ~/.ssh/authorized_keys"
 done
 sleep infinity
