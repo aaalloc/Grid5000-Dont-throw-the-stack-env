@@ -1,0 +1,8 @@
+---
+Simple:
+  reboot:
+    substitute:
+      - action: exec
+        name: kexec
+        # nohup to be sure the script exit correctly before the kexec start
+        command: kexec --reuse-cmdline --initrd=/boot/initrd.img-5.15.0-79-generic -l /boot/vmlinuz-5.15.0-79-generic && nohup /bin/sh -c 'sleep 1; systemctl kexec' 1>/dev/null 2>/dev/null </dev/null &

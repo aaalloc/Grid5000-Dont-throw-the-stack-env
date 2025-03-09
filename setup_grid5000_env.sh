@@ -43,6 +43,6 @@ EOF
 }
 
 ENV_NAME="mutilate-environment"
-GRID5000_SITE="grenoble"
+GRID5000_SITE="toulouse"
 
 build_environment $GRID5000_SITE $ENV_NAME

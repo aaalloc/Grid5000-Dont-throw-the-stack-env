@@ -2,7 +2,7 @@
 
 
 function linux-tools-from-apt {
-    apt install -y linux-headers-$(uname -r) linux-image-$(uname -r) linux-tools-$(uname -r)
+    apt install -y linux-headers-$(uname -r) linux-tools-$(uname -r)
 }
 
 function linux-tools-from-repo {
