@@ -14,7 +14,7 @@ function get_current_interface_ip() {
 HOST_PATH=~/.ok_exp_host
 CLIENTS_PATH=~/.ok_nodes_client
 
-kadeploy3 -a ~/ --output-ok-nodes $HOST_PATH
+kadeploy3 ubuntu2204 --output-ok-nodes $HOST_PATH
 EXP_NODE=$(cat $HOST_PATH | head -n 1)
 NODES=$(cat $CLIENTS_PATH | tr "," "\n")
 for NODE in $NODES;
@@ -23,3 +23,4 @@ do
     PUB_KEY=$(ssh root@$NODE "cat ~/.ssh/id_rsa.pub")
     ssh root@$EXP_NODE "echo $PUB_KEY >> ~/.ssh/authorized_keys"
 done
+sleep infinity
