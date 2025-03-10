@@ -2,7 +2,7 @@
 
 #OAR -t deploy
 
-HOST_SITE=grenoble
+HOST_SITE=sophia
 NODES_CLIENT_FILE=~/.ok_nodes_client
 
 kadeploy3 -a build/mutilate-environment/mutilate-environment.dsc --output-ok-nodes $NODES_CLIENT_FILE

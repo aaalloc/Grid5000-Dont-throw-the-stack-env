@@ -2,7 +2,7 @@
 
 #OAR -t deploy
 #OAR -t destructive
-#OAR -p "cputype='Intel Xeon E5-2650 v2'"
+#OAR -p "cputype=Intel Xeon E5-2650 v2"
 
 
 function get_current_interface_ip() {
