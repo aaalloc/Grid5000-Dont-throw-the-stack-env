@@ -1,21 +1,12 @@
 #!/bin/bash
 
-#OAR -t deploy
-#OAR -t destructive
-#OAR -p "cputype='Intel Xeon E5-2650 v2'"
+# update client nodes authorized_keys so that experience nodes can ssh into them
 
+# arg1: path to host node file
+# arg2: path to client nodes file
 
-function get_current_interface_ip() {
-    INTERFACES=$(ip link show | grep -v 'lo' | grep 'state UP' | awk '{print $2}' | tr -d ':')    
-    IP=$(ip addr show $INTERFACES | grep 'inet ' | awk '{print $2}' | awk -F'/' '{print $1}')
-
-    echo $IP
-}
-
-HOST_NODE_PATH=~/.ok_nodes_host
-CLIENTS_NODES_PATH=~/.ok_nodes_client
-
-kadeploy3 -a environment.yaml --output-ok-nodes $HOST_NODE_PATH
+HOST_NODE_PATH=$1
+CLIENTS_NODES_PATH=$2
 
 EXP_NODE=$(cat $HOST_NODE_PATH | head -n 1)
 NODES=$(cat $CLIENTS_NODES_PATH | tr "," "\n")
@@ -28,4 +19,3 @@ for NODE in $NODES;
 do
     ssh root@$NODE "echo $PUB_KEY >> ~/.ssh/authorized_keys"
 done
-sleep infinity

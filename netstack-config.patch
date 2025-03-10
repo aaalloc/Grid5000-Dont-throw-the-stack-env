@@ -93,18 +93,4 @@ index 0f59984..5e7e3cc 100644
 -NET_IF=eno3d1
 +NET_IF=wlp0s20f3
  NET_IF_MOD=mlx4
-diff --git a/run.sh b/run.sh
-index 51fb9b5..7f6a8a7 100755
---- a/run.sh
-+++ b/run.sh
-@@ -95,8 +95,10 @@ apply_tunings
- # Initialization for DPDK
- if [ "$USERSTACK" == "true" ]; then
-     # mlx4 supports bifurcation, and we only need to work around a kernel driver bug by re-loading the module
--    modprobe -r mlx4_ib mlx4_en mlx4_core
--    modprobe mlx4_en mlx4_ib 
-+
-+    bash /home/work/load-driver.sh
-     echo 1024 > /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages
-     echo 1024 > /sys/devices/system/node/node0/hugepages/hugepages-2048kB/nr_hugepages
-     echo 1024 > /sys/devices/system/node/node1/hugepages/hugepages-2048kB/nr_hugepages
+
