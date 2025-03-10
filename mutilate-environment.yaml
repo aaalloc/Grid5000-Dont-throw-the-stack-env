@@ -65,6 +65,14 @@ setup:
                   - install_dep:
                             - exec_in: >
                                       DEBIAN_FRONTEND=noninteractive apt-get update
+        - increase-file-limits:
+                  - increase_file_limits:
+                            - exec_in: |
+                                      echo "root soft nproc 65535" >> /etc/security/limits.conf
+                                      echo "root hard nproc 65535" >> /etc/security/limits.conf
+                                      echo "root soft nofile 65535" >> /etc/security/limits.conf
+                                      echo "root hard nofile 65535" >> /etc/security/limits.conf
+
         - install_mutilate:
                   - mutilate_dep:
                             - exec_in: |
