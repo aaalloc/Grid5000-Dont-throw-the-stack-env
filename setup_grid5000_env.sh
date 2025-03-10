@@ -1,6 +1,7 @@
 #!/bin/bash
 
-
+SITES="lille nancy strasbourg rennes nantes bordeaux lyon toulouse grenoble sophia"
+ENVIRONMENTS="mutilate-environment environment"
 function retrieve_repo() {
     # this function will get the repo and setup everything needed in precised
     # grid5000 site
@@ -43,6 +44,27 @@ EOF
 }
 
 ENV_NAME="mutilate-environment"
-GRID5000_SITE="toulouse"
+if [ -z $1 ]; then
+    echo "Please provide the grid5000 site"
+    exit 1
+elif
+    [ -z $2 ]; then
+    echo "Please provide the environment name"
+    exit 1
+fi
+
+if [[ $SITES != *"$1"* ]]; then
+    echo "Please provide a valid grid5000 site ($SITES)"
+    exit 1
+fi
+
+if [[ $ENVIRONMENTS != *"$2"* ]]; then
+    echo "Please provide a valid environment name ($ENVIRONMENTS)"
+    exit 1
+fi
+
+GRID5000_SITE=$1
+ENV_NAME=$2
+
 
 build_environment $GRID5000_SITE $ENV_NAME

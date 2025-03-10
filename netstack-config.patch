@@ -12,7 +12,7 @@ index 035927c..6d13c62 100755
  if [ -e "../configs/$(uname -r).sh" ]; then
      echo "Loading kernel-specific config for $(uname -r)"
 diff --git a/configs/base.sh b/configs/base.sh
-index 05a0da5..d61d9f5 100644
+index 05a0da5..74fe09a 100644
 --- a/configs/base.sh
 +++ b/configs/base.sh
 @@ -1,13 +1,25 @@
@@ -26,14 +26,14 @@ index 05a0da5..d61d9f5 100644
 +
 +CURRENT_KERNEL=$(uname -r)
 +if [[ $KERNEL_NAME == *"generic"* ]]; then
++    CPUPOWER=cpupower
++    X86_ENERGY_PERF_POLICY=x86_energy_perf_policy
++    PERF=perf
++else
 +    CPUPOWER=$KERNEL_PATH/tools/cpupower/cpupower
 +    X86_ENERGY_PERF_POLICY=$KERNEL_PATH/tools/power/x86/x86_energy_perf_policy/x86_energy_perf_policy
 +    PERF=$KERNEL_PATH/tools/perf/perf
 +    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH":"$KERNEL_SRC/tools/power/cpupower"
-+else
-+    CPUPOWER=cpupower
-+    X86_ENERGY_PERF_POLICY=x86_energy_perf_policy
-+    PERF=perf
 +fi
 +
 +
@@ -59,18 +59,19 @@ index 0b84614..18480f1 100644
 +MEMCACHED_FSTACK=/home/work/memcached-fstack/memcached
 +MEMCACHED_CALADAN=/home/work/memcached-caladan/memcached
 diff --git a/configs/mutilate.sh b/configs/mutilate.sh
-index c43ed77..ca79ea9 100644
+index c43ed77..f9a3889 100644
 --- a/configs/mutilate.sh
 +++ b/configs/mutilate.sh
-@@ -1,8 +1,8 @@
+@@ -1,8 +1,9 @@
  # The server IP (the current machine)
 -MEMSERVER_IP=192.168.199.1
-+MEMSERVER_IP=130.190.44.231
++MEMSERVER_IP=0.0.0.0
  # List of Mutilate clients
 -MEMCLIENTS=tilly03,tilly04,tilly05,tilly06,tilly07,tilly08
 -MEMCTRL=tilly02
-+MEMCLIENTS=tilly03,tilly04,tilly05,tilly06,tilly07,grid08
-+MEMCTRL=grid02
++MEMNODES=$(cat /tmp/mutilate_nodes)
++MEMCTRL=$(echo $MEMNODES|cut -d, -f1)
++MEMCLIENTS=$(echo $MEMNODES|cut -d, -f2-)
  # Command shorthands
  MUTILATE="ssh $MEMCTRL taskset -c 0-7 mutilate -T8"
  MUTILATE+=" -s $MEMSERVER_IP -d1 -K fb_key -V fb_value -i fb_ia -r1000000"
@@ -103,9 +104,7 @@ index 51fb9b5..7f6a8a7 100755
 -    modprobe -r mlx4_ib mlx4_en mlx4_core
 -    modprobe mlx4_en mlx4_ib 
 +
-+    # in our case, loaded at boot time
-+    # modprobe -r mlx4_ib mlx4_en mlx4_core
-+    # modprobe mlx4_en mlx4_ib 
++    bash /home/work/load-driver.sh
      echo 1024 > /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages
      echo 1024 > /sys/devices/system/node/node0/hugepages/hugepages-2048kB/nr_hugepages
      echo 1024 > /sys/devices/system/node/node1/hugepages/hugepages-2048kB/nr_hugepages

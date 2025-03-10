@@ -93,7 +93,7 @@ setup:
                             - exec_in: >
                                       apt-get update
                             - exec_in: >
-                                      DEBIAN_FRONTEND=noninteractive apt-get install -y net-tools kexec-tools libpci-dev pciutils gettext libelf-dev flex fakeroot bc ncurses-dev xz-utils build-essential wget libssl-dev python3-pip autotools-dev automake bison
+                                      DEBIAN_FRONTEND=noninteractive apt-get install -y pdsh net-tools kexec-tools libpci-dev pciutils gettext libelf-dev flex fakeroot bc ncurses-dev xz-utils build-essential wget libssl-dev python3-pip autotools-dev automake bison
                             - exec_in: >
                                       apt install linux-image-5.15.0-79-generic
         - install_mutilate:
