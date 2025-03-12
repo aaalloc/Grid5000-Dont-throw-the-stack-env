@@ -96,7 +96,7 @@ setup:
                                       DEBIAN_FRONTEND=noninteractive apt-get install -y pdsh net-tools kexec-tools libpci-dev pciutils gettext libelf-dev flex fakeroot bc ncurses-dev xz-utils build-essential wget libssl-dev python3-pip autotools-dev automake bison
                             # dpdk/mlx
                             - exec_in: >
-                                      apt get install ibverbs-providerslibibverbs-dev
+                                      DEBIAN_FRONTEND=noninteractive  apt-get install -y ibverbs-providers libibverbs-dev
                             #     - exec_in: >
                             #               DEBIAN_FRONTEND=noninteractive apt install -y linux-image-5.15.0-79-generic
         - ssh-accept-new:
@@ -125,10 +125,10 @@ setup:
                                       cd /home/work/f-stack/dpdk
                                       meson -Denable_kmods=true -Ddisable_libs=flow_classify -Ddisable_drivers=crypto/openssl,net/ice build
                                       ninja -C build -j $(nproc)
-                                      sudo ninja -C build install
                                       cd ../lib
                                       make -j $(nproc)
-                                      sudo make install
+                              #       sudo ninja -C build install
+                              #       sudo make install
 
         - install_memcached_fstack:
                   - compile:
