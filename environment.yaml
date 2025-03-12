@@ -94,8 +94,15 @@ setup:
                                       apt-get update
                             - exec_in: >
                                       DEBIAN_FRONTEND=noninteractive apt-get install -y pdsh net-tools kexec-tools libpci-dev pciutils gettext libelf-dev flex fakeroot bc ncurses-dev xz-utils build-essential wget libssl-dev python3-pip autotools-dev automake bison
+                            # dpdk/mlx
+                            - exec_in: >
+                                      apt get install ibverbs-providerslibibverbs-dev
                             #     - exec_in: >
                             #               DEBIAN_FRONTEND=noninteractive apt install -y linux-image-5.15.0-79-generic
+        - ssh-accept-new:
+                  - ssh_accept_new:
+                            - exec_in: |
+                                      echo "StrictHostKeyChecking=accept-new" >> /etc/ssh/ssh_config
         - install_mutilate:
                   - mutilate_dep:
                             - exec_in: |
@@ -116,7 +123,7 @@ setup:
                             - exec_in: |
                                       git clone https://github.com/F-Stack/f-stack.git /home/work/f-stack
                                       cd /home/work/f-stack/dpdk
-                                      meson setup build
+                                      meson -Denable_kmods=true -Ddisable_libs=flow_classify -Ddisable_drivers=crypto/openssl,net/ice build
                                       ninja -C build -j $(nproc)
                                       sudo ninja -C build install
                                       cd ../lib

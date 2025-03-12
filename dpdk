@@ -1,0 +1,3 @@
+modprobe uio_pci_generic
+dpdk-devbind.py --bind=uio_pci_generic eno2
+
