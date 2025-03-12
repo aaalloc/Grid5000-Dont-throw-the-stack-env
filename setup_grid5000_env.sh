@@ -10,7 +10,7 @@ function retrieve_repo() {
     GRID5000_SITE=$1
     REPO_URL="https://github.com/aaalloc/Grid5000-Dont-throw-the-stack-env"
 
-    if [ -d "~/public/dont-throw-the-stack" ]; then
+    if [ -d ~/public/dont-throw-the-stack ]; then
         git -C ~/public/dont-throw-the-stack pull
     else
         git clone $REPO_URL ~/public/dont-throw-the-stack
