@@ -125,8 +125,8 @@ setup:
                                       cd /home/work/f-stack/dpdk
                                       meson -Denable_kmods=true -Ddisable_libs=flow_classify -Ddisable_drivers=crypto/openssl,net/ice build
                                       ninja -C build -j $(nproc)
-                                      cd ../lib
-                                      make -j $(nproc)
+                              #       cd ../lib
+                              #       make -j $(nproc)
                               #       sudo ninja -C build install
                               #       sudo make install
 

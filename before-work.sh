@@ -12,6 +12,7 @@ bash /home/work/update-linux-tools.sh
 cd /home/work/f-stack/dpdk
 sudo ninja -C build install
 cd ../lib
+sudo make
 sudo make install
 
 echo "everythings ok"
