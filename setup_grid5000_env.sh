@@ -38,7 +38,7 @@ function build_environment() {
     kameleon template import grid5000/ubuntu2204-x64-common
 
     kameleon build $ENV_NAME.yaml
-    sed -i 's|server:///path/to/your/image|local:///home/ayanovsk/build//$ENV_NAME/$ENV_NAME.tar.zst|' build/$ENV_NAME/$ENV_NAME.dsc
+    sed -i 's|server:///path/to/your/image|local:///home/ayanovsk/build/$ENV_NAME/$ENV_NAME.tar.zst|' build/$ENV_NAME/$ENV_NAME.dsc
     exit
 EOF
 }
