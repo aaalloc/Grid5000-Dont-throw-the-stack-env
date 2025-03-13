@@ -60,7 +60,7 @@ index 0b84614..1812716 100644
 +MEMCACHED_FSTACK=/home/work/memcached-fstack/memcached
 +MEMCACHED_CALADAN=/home/work/memcached-caladan/memcached
 diff --git a/configs/mutilate.sh b/configs/mutilate.sh
-index c43ed77..8d18f44 100644
+index c43ed77..ce478c6 100644
 --- a/configs/mutilate.sh
 +++ b/configs/mutilate.sh
 @@ -1,8 +1,11 @@
@@ -72,7 +72,7 @@ index c43ed77..8d18f44 100644
  # List of Mutilate clients
 -MEMCLIENTS=tilly03,tilly04,tilly05,tilly06,tilly07,tilly08
 -MEMCTRL=tilly02
-+MEMNODES=$(cat /tmp/mutilate_nodes)
++MEMNODES=$(cat /home/work/mutilate_nodes)
 +MEMCTRL=$(echo $MEMNODES|cut -d, -f1)
 +MEMCLIENTS=$(echo $MEMNODES|cut -d, -f2-)
  # Command shorthands

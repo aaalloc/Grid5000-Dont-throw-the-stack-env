@@ -65,5 +65,5 @@ ssh root@$EXP_NODE "
 ssh root@$EXP_NODE "
     bash /home/work/before-work.sh
 "
-# update f-stack conf
+
 sleep infinity
