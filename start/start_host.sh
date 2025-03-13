@@ -23,7 +23,7 @@ NODES=$(cat $CLIENTS_NODES_PATH | tr "," "\n")
 # path here is hardcoded for simplicity, be carefull so that in netstack conf it corresponds (mutilate.sh)
 paste -sd, $CLIENTS_NODES_PATH  | ssh root@$EXP_NODE "cat > /home/work/mutilate_nodes"
 
-~/public/dont-throw-the-stack/start/update_ssh_exp.sh $EXP_NODE $NODES
+~/public/dont-throw-the-stack/start/update_ssh_exp.sh $EXP_NODE "${NODES}"
 ~/public/dont-throw-the-stack/start/update_interfaces.sh $EXP_NODE
 ~/public/dont-throw-the-stack/start/update_fstack_conf.sh $EXP_NODE /home/work/netstack-exp/f-stack.conf
 
