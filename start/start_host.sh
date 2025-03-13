@@ -52,12 +52,12 @@ ssh root@$EXP_NODE "
 
 # setup f-stack conf with right ip address
 ssh root@$EXP_NODE "
-    sed -i '/^port_list=1$/c\port_list=0' /home/work/memcached-fstack/f-stack.conf
-    sed -i '/^\[port1\]$/c\[port0\]' /home/work/memcached-fstack/f-stack.conf
-    sed "s/addr=192.168.199.1/addr=${SUBNET_ADDR}/" -i /home/work/memcached-fstack/f-stack.conf
-    sed "s/netmask=255.252.0.0/netmask=${SUBNET_NETMASK}/" -i /home/work/memcached-fstack/f-stack.conf
-    sed "s/broadcast=192.168.199.255/broadcast=${SUBNET_BC}/" -i /home/work/memcached-fstack/f-stack.conf
-    sed "s/gateway=192.168.199.99/gateway=${SUBNET_GW}/" -i /home/work/memcached-fstack/f-stack.conf
+    sed -i '/^port_list=1$/c\port_list=0' /home/work/netstack-exp/f-stack.conf
+    sed -i '/^\[port1\]$/c\[port0\]' /home/work/netstack-exp/f-stack.conf
+    sed "s/addr=192.168.199.1/addr=${SUBNET_ADDR}/" -i /home/work/netstack-exp/f-stack.conf
+    sed "s/netmask=255.252.0.0/netmask=${SUBNET_NETMASK}/" -i /home/work/netstack-exp/f-stack.conf
+    sed "s/broadcast=192.168.199.255/broadcast=${SUBNET_BC}/" -i /home/work/netstack-exp/f-stack.conf
+    sed "s/gateway=192.168.199.99/gateway=${SUBNET_GW}/" -i /home/work/netstack-exp/f-stack.conf
 "
 
 
