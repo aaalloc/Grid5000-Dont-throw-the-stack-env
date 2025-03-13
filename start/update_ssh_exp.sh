@@ -6,7 +6,7 @@
 # arg2: path to client nodes file
 
 EXP_NODE=$1
-$NODES=$2
+NODES=$2
 
 
 ssh root@$EXP_NODE "ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa <<< y"
