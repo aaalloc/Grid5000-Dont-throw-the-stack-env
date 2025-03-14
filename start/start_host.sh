@@ -36,7 +36,7 @@ fi
 
 # final step
 ssh root@$EXP_NODE "
-    bash /home/work/before-work.sh
+    bash /home/work/before-work.sh $ENV
 "
 
 sleep infinity
