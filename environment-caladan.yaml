@@ -91,6 +91,9 @@ setup:
                                       make submodules
                                       make clean
                                       CONFIG_MLX5=y make
+                                      pushd ksched
+                                      make clean
+                                      make
                     #       - breakpoint: "check memcached"
         - memcahced-caladan:
                   - compile:

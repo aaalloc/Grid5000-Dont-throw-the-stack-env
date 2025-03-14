@@ -16,7 +16,9 @@ function get_current_interface_ip() {
 HOST_NODE_PATH=~/.ok_nodes_host
 CLIENTS_NODES_PATH=~/.ok_nodes_client
 
-kadeploy3 -a build/environment/environment.dsc --output-ok-nodes $HOST_NODE_PATH
+
+
+kadeploy3 -a build/$ENV/$ENV.dsc --output-ok-nodes $HOST_NODE_PATH
 
 EXP_NODE=$(cat $HOST_NODE_PATH | head -n 1)
 NODES=$(cat $CLIENTS_NODES_PATH | tr "," "\n")
