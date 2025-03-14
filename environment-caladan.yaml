@@ -64,6 +64,10 @@ setup:
                             - download_file_in:
                                       - http://public.sophia.grid5000.fr/~ayanovsk/dont-throw-the-stack/netstack-config.patch
                                       - /home/work/netstack-config.patch
+                  - get_before_work:
+                            - download_file_in:
+                                      - http://public.sophia.grid5000.fr/~ayanovsk/dont-throw-the-stack/before-work.sh
+                                      - /home/work/before-work.sh
 
         - general_dep:
                   - install_dep:
