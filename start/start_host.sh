@@ -16,7 +16,8 @@ function get_current_interface_ip() {
 HOST_NODE_PATH=~/.ok_nodes_host
 CLIENTS_NODES_PATH=~/.ok_nodes_client
 
-
+ENV=environment-caladan
+# ENV=environment
 
 kadeploy3 -a build/$ENV/$ENV.dsc --output-ok-nodes $HOST_NODE_PATH
 
