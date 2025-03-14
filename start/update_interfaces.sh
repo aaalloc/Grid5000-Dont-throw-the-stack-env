@@ -15,5 +15,6 @@ ssh root@$EXP_NODE "
     mymask=\$(ifconfig \$F_INT | grep "netmask" | awk -F ' ' '{print \$4}');
     mybc=\$(ifconfig \$F_INT | grep "broadcast" | awk -F ' ' '{print \$6}');
     ifconfig \$S_INT \$myaddr netmask \$mymask broadcast \$mybc;
-    ifconfig \$F_INT $SUBNET_ADDR netmask $SUBNET_NETMASK broadcast $SUBNET_BC hw ether $SUBNET_MAC
+    ifconfig \$F_INT $SUBNET_ADDR netmask $SUBNET_NETMASK broadcast $SUBNET_BC hw ether $SUBNET_MAC;
+    dhclient \$S_INT
 "
