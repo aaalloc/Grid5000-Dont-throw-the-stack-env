@@ -27,7 +27,11 @@ paste -sd, $CLIENTS_NODES_PATH  | ssh root@$EXP_NODE "cat > /home/work/mutilate_
 
 ~/public/dont-throw-the-stack/start/update_ssh_exp.sh $EXP_NODE "${NODES}"
 ~/public/dont-throw-the-stack/start/update_interfaces.sh $EXP_NODE
-~/public/dont-throw-the-stack/start/update_fstack_conf.sh $EXP_NODE /home/work/netstack-exp/f-stack.conf
+if [ $ENV == "environment" ]; then
+    ~/public/dont-throw-the-stack/start/update_fstack_conf.sh $EXP_NODE /home/work/netstack-exp/f-stack.conf
+elif [ $ENV == "environment-caladan" ]; then
+    ~/public/dont-throw-the-stack/start/update_caladan_conf.sh $EXP_NODE /home/work/netstack-exp/caladan.config
+fi
 
 # final step
 ssh root@$EXP_NODE "
