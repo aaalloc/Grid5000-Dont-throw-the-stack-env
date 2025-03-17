@@ -21,7 +21,7 @@ bash /home/work/update-linux-tools.sh
 
 
 # fix dpdk install for f-stack
-if [ $ENV == "environment"]; then
+if [ $ENV == "environment" ]; then
     cd /home/work/f-stack/dpdk
     sudo ninja -C build install
     cd ../lib

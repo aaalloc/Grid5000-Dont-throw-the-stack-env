@@ -10,7 +10,7 @@
 # To see the variables that you can override, use the following command:
 #   kameleon info ubuntu2204-dont-throw-the-stack.yaml
 ---
-extend: grid5000/ubuntu2204-x64-common.yaml
+extend: grid5000/ubuntu2004-x64-common.yaml
 
 global:
         ### Uncomment and adapt the global variables below as needed
