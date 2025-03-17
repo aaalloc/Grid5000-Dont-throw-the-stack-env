@@ -57,16 +57,16 @@ setup:
                                       mkdir /home/work
                   - get_scripts:
                             - download_file_in:
-                                      - http://public.sophia.grid5000.fr/~ayanovsk/dont-throw-the-stack/update-linux-tools.sh
+                                      - http://public.nancy.grid5000.fr/~ayanovsk/dont-throw-the-stack/update-linux-tools.sh
                                       - /home/work/update-linux-tools.sh
 
                   - get_netstack_conf:
                             - download_file_in:
-                                      - http://public.sophia.grid5000.fr/~ayanovsk/dont-throw-the-stack/netstack-config.patch
+                                      - http://public.nancy.grid5000.fr/~ayanovsk/dont-throw-the-stack/netstack-config.patch
                                       - /home/work/netstack-config.patch
                   - get_before_work:
                             - download_file_in:
-                                      - http://public.sophia.grid5000.fr/~ayanovsk/dont-throw-the-stack/before-work.sh
+                                      - http://public.nancy.grid5000.fr/~ayanovsk/dont-throw-the-stack/before-work.sh
                                       - /home/work/before-work.sh
 
         - general_dep:
@@ -74,7 +74,7 @@ setup:
                             - exec_in: >
                                       apt-get update
                             - exec_in: >
-                                      DEBIAN_FRONTEND=noninteractive apt-get install -y pdsh net-tools kexec-tools libpci-dev pciutils gettext libelf-dev flex fakeroot bc ncurses-dev xz-utils build-essential wget libssl-dev python3-pip autotools-dev automake bison
+                                      DEBIAN_FRONTEND=noninteractive apt-get install -y ethtool pdsh net-tools kexec-tools libpci-dev pciutils gettext libelf-dev flex fakeroot bc ncurses-dev xz-utils build-essential wget libssl-dev python3-pip autotools-dev automake bison
                             # dpdk/mlx
                             - exec_in: >
                                       DEBIAN_FRONTEND=noninteractive apt install -y git build-essential net-tools systemd-timesyncd autotools-dev automake
