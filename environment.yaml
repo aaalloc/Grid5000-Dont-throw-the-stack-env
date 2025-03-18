@@ -118,6 +118,7 @@ setup:
         - install_memcached_fstack:
                   - compile:
                             - exec_in: |
+                                      apt install -y scons libevent-dev gengetopt libzmq3-dev
                                       git clone https://git.uwaterloo.ca/p5cai/memcached-fstack.git /home/work/memcached-fstack
                                       wget -O /tmp/memcached-hash.patch https://github.com/memcached/memcached/commit/63b8e76067523a02a3e0215db1aef0b34edcf708.patch
                                       cd /home/work/memcached-fstack
@@ -130,7 +131,6 @@ setup:
         - install_memcached:
                   - compile:
                             - exec_in: |
-                                      apt install -y scons libevent-dev gengetopt libzmq3-dev
                                       git clone https://github.com/memcached/memcached.git -b 1.6.9 /home/work/memcached
                                       cd /home/work/memcached
                                       ./autogen.sh
