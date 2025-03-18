@@ -7,7 +7,7 @@ if [ -z $ENV ]; then
 fi
 
 case $ENV in
-    environment|environment-caladan)
+    environment|environment-caladan|environment-polling)
         ;;
     *)
         echo "Please provide a valid environment name (environment or environment-caladan)"
