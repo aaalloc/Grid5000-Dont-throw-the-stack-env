@@ -66,13 +66,13 @@ setup:
                                       - /home/work/mutilate-python3.patch
                   - get_kernel_polling_patch:
                             - download_file_in:
-                            - https://git.uwaterloo.ca/p5cai/netstack-exp/-/raw/master/kernel-polling-5.15.79-base.patch?ref_type=heads
-                            - /home/work/kernel-polling-5.15.79-base.patch
+                                      - https://git.uwaterloo.ca/p5cai/netstack-exp/-/raw/master/kernel-polling-5.15.79-base.patch?ref_type=heads
+                                      - /home/work/kernel-polling-5.15.79-base.patch
 
                   - get_mlx4_driver_patch:
                             - download_file_in:
-                            - https://git.uwaterloo.ca/p5cai/netstack-exp/-/raw/master/kernel-polling-5.15.79-mlx4.patch?ref_type=heads
-                            - /home/work/mlx4-driver.patch
+                                      - https://git.uwaterloo.ca/p5cai/netstack-exp/-/raw/master/kernel-polling-5.15.79-mlx4.patch?ref_type=heads
+                                      - /home/work/mlx4-driver.patch
 
                   - get_netstack_conf:
                             - download_file_in:
@@ -98,17 +98,7 @@ setup:
                   - ssh_accept_new:
                             - exec_in: |
                                       echo "StrictHostKeyChecking=accept-new" >> /etc/ssh/ssh_config
-        - install_mutilate:
-                  - mutilate_dep:
-                            - exec_in: |
-                                      apt-get install -y scons libevent-dev gengetopt libzmq3-dev
-                  - mutilate_install:
-                            - exec_in: |
-                                      git clone https://github.com/leverich/mutilate /home/work/mutilate
-                                      cd /home/work/mutilate
-                                      git apply /home/work/mutilate-python3.patch
-                                      scons
-                                      mv mutilate /bin/mutilate
+
         - install_fstack:
                   - install_dep:
                             - exec_in: |
