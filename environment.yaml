@@ -136,6 +136,29 @@ setup:
                                       ./configure
                                       make -j $(nproc)
 
+        - caladan:
+                  - compile:
+                            - exec_in: |
+                                      git clone https://github.com/shenango/caladan.git /home/work/caladan
+                                      cd /home/work/caladan
+                                      # because after that they introduce uintr and we dont want in our case
+                                      git checkout ed67045
+                                      make submodules
+                                      make clean
+                                      CONFIG_MLX5=y make
+                                      pushd ksched
+                                      make clean
+                                      make
+                    #       - breakpoint: "check memcached"
+        - memcached-caladan:
+                  - compile:
+                            - exec_in: |
+                                      git clone https://github.com/shenango/memcached.git -b caladan /home/work/memcached-caladan
+                                      cd /home/work/memcached-caladan
+                                      ./autogen.sh
+                                      ./configure --with-shenango=/home/work/caladan
+                                      make -j $(nproc)
+
         - get_experiences:
                   - get_repo:
                             - exec_in: |
