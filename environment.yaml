@@ -33,7 +33,7 @@ global:
         ## Environment kernel path and params
         # g5k_kernel_path: "/vmlinuz"
         # g5k_initrd_path: "/initrd.img"
-        # g5k_kernel_params: ""
+        g5k_kernel_params: "modprobe.blacklist=nouveau,mitigations=off"
         ## Environment visibility
         # g5k_visibility: "shared"
 
