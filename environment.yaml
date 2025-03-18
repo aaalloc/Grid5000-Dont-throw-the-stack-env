@@ -60,10 +60,6 @@ setup:
                                       - http://public.sophia.grid5000.fr/~ayanovsk/dont-throw-the-stack/update-linux-tools.sh
                                       - /home/work/update-linux-tools.sh
 
-                  - get_before_work:
-                            - download_file_in:
-                                      - http://public.sophia.grid5000.fr/~ayanovsk/dont-throw-the-stack/mutilate-python3.patch
-                                      - /home/work/mutilate-python3.patch
                   - get_kernel_polling_patch:
                             - download_file_in:
                                       - https://git.uwaterloo.ca/p5cai/netstack-exp/-/raw/master/kernel-polling-5.15.79-base.patch?ref_type=heads
@@ -76,12 +72,12 @@ setup:
 
                   - get_netstack_conf:
                             - download_file_in:
-                                      - http://public.sophia.grid5000.fr/~ayanovsk/dont-throw-the-stack/netstack-config.patch
+                                      - http://public.nancy.grid5000.fr/~ayanovsk/dont-throw-the-stack/netstack-config.patch
                                       - /home/work/netstack-config.patch
 
                   - get_before_work:
                             - download_file_in:
-                                      - http://public.sophia.grid5000.fr/~ayanovsk/dont-throw-the-stack/before-work.sh
+                                      - http://public.nancy.grid5000.fr/~ayanovsk/dont-throw-the-stack/before-work.sh
                                       - /home/work/before-work.sh
         - general_dep:
                   - install_dep:
