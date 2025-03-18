@@ -88,7 +88,7 @@ setup:
                             - exec_in: >
                                       apt-get update
                             - exec_in: >
-                                      DEBIAN_FRONTEND=noninteractive apt-get install -y  pkg-config git pdsh net-tools kexec-tools libpci-dev pciutils gettext libelf-dev flex fakeroot bc ncurses-dev xz-utils build-essential wget libssl-dev python3-pip autotools-dev automake bison
+                                      DEBIAN_FRONTEND=noninteractive apt-get install -y ethtool pkg-config git pdsh net-tools kexec-tools libpci-dev pciutils gettext libelf-dev flex fakeroot bc ncurses-dev xz-utils build-essential wget libssl-dev python3-pip autotools-dev automake bison
                             # dpdk/mlx
                             - exec_in: >
                                       DEBIAN_FRONTEND=noninteractive  apt-get install -y ibverbs-providers libibverbs-dev

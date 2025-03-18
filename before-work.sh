@@ -7,10 +7,10 @@ if [ -z $ENV ]; then
 fi
 
 case $ENV in
-    environment|environment-caladan|environment-polling)
+    fstack|caladan|polling)
         ;;
     *)
-        echo "Please provide a valid environment name (environment or environment-caladan)"
+        echo "Please provide a valid environment name (fstack, caladan or polling)"
         exit 1
         ;;
 esac
@@ -20,7 +20,7 @@ bash /home/work/update-linux-tools.sh
 
 
 # fix dpdk install for f-stack
-if [ $ENV == "environment" ]; then
+if [ $ENV == "fstack" ]; then
     cd /home/work/f-stack/dpdk
     sudo ninja -C build install
     cd ../lib

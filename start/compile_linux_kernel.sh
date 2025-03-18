@@ -16,5 +16,6 @@ ssh root@$SSH "
     scripts/config --disable CONFIG_DEBUG_INFO_BTF
     echo  | make -j \$(nproc)
     echo  | make modules_install
-    echo  | make install
+    cp arch/x86/boot/bzImage /boot/vmlinuz-5.15.79
+    /etc/kernel/postinst.d/initramfs-tools 5.15.79 /boot/vmlinuz-5.15.79
 "
