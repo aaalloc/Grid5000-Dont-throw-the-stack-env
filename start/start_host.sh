@@ -9,9 +9,19 @@ set -e
 HOST_NODE_PATH=~/.ok_nodes_host
 CLIENTS_NODES_PATH=~/.ok_nodes_client
 
-#ENV=caladan
-#ENV=fstack
-ENV=polling
+case "$1" in
+    "")
+        echo "Set default value to caladan"
+        ENV=caladan
+        ;;
+    caladan|fstack|polling)
+        ENV=$1
+        ;;
+    *)
+        echo "Please provide a valid environment name (caladan, fstack, polling)"
+        exit 1
+        ;;
+esac
 
 kadeploy3 -a build/environment/environment.dsc --output-ok-nodes $HOST_NODE_PATH
 
