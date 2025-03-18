@@ -64,20 +64,15 @@ setup:
                             - download_file_in:
                                       - http://public.sophia.grid5000.fr/~ayanovsk/dont-throw-the-stack/mutilate-python3.patch
                                       - /home/work/mutilate-python3.patch
+                  - get_kernel_polling_patch:
+                            - download_file_in:
+                            - https://git.uwaterloo.ca/p5cai/netstack-exp/-/raw/master/kernel-polling-5.15.79-base.patch?ref_type=heads
+                            - /home/work/kernel-polling-5.15.79-base.patch
 
-                  - get_nic_driver:
-                            - exec_in: >
-                                      mkdir /home/work/connectx3-driver
+                  - get_mlx4_driver_patch:
                             - download_file_in:
-                                      - http://public.sophia.grid5000.fr/~ayanovsk/dont-throw-the-stack/connectx3-driver/mlx4_core.ko
-                                      - /home/work/connectx3-driver/mlx4_core.ko
-                            - download_file_in:
-                                      - http://public.sophia.grid5000.fr/~ayanovsk/dont-throw-the-stack/connectx3-driver/mlx4_en.ko
-                                      - /home/work/connectx3-driver/mlx4_en.ko
-                  - get_load_driver:
-                            - download_file_in:
-                                      - http://public.sophia.grid5000.fr/~ayanovsk/dont-throw-the-stack/load-driver.sh
-                                      - /home/work/load-driver.sh
+                            - https://git.uwaterloo.ca/p5cai/netstack-exp/-/raw/master/kernel-polling-5.15.79-mlx4.patch?ref_type=heads
+                            - /home/work/mlx4-driver.patch
 
                   - get_netstack_conf:
                             - download_file_in:
