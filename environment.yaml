@@ -130,6 +130,7 @@ setup:
         - install_memcached:
                   - compile:
                             - exec_in: |
+                                      apt install -y scons libevent-dev gengetopt libzmq3-dev
                                       git clone https://github.com/memcached/memcached.git -b 1.6.9 /home/work/memcached
                                       cd /home/work/memcached
                                       ./autogen.sh
@@ -139,6 +140,7 @@ setup:
         - caladan:
                   - compile:
                             - exec_in: |
+                                      apt install -y make gcc cmake pkg-config libnl-3-dev libnl-route-3-dev libnuma-dev uuid-dev libssl-dev libaio-dev libcunit1-dev libclang-dev libncurses-dev meson python3-pyelftools
                                       git clone https://github.com/shenango/caladan.git /home/work/caladan
                                       cd /home/work/caladan
                                       # because after that they introduce uintr and we dont want in our case
