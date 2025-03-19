@@ -12,7 +12,7 @@ CLIENTS_NODES_PATH=~/.ok_nodes_client
 case "$1" in
     "")
         echo "Set default value to caladan"
-        ENV=caladan
+        ENV=fstack
         ;;
     caladan|fstack|polling)
         ENV=$1
