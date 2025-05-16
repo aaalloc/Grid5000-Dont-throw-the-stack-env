@@ -10,7 +10,7 @@
 # To see the variables that you can override, use the following command:
 #   kameleon info ubuntu2204-dont-throw-the-stack.yaml
 ---
-extend: grid5000/ubuntu2004-x64-common.yaml
+extend: grid5000/ubuntu2204-x64-common.yaml
 
 global:
         ### Uncomment and adapt the global variables below as needed
@@ -55,30 +55,6 @@ setup:
                   - create_home:
                             - exec_in: >
                                       mkdir /home/work
-                  - get_scripts:
-                            - download_file_in:
-                                      - http://public.sophia.grid5000.fr/~ayanovsk/dont-throw-the-stack/update-linux-tools.sh
-                                      - /home/work/update-linux-tools.sh
-
-                  - get_kernel_polling_patch:
-                            - download_file_in:
-                                      - https://git.uwaterloo.ca/p5cai/netstack-exp/-/raw/master/kernel-polling-5.15.79-base.patch?ref_type=heads
-                                      - /home/work/kernel-polling-5.15.79-base.patch
-
-                  - get_mlx4_driver_patch:
-                            - download_file_in:
-                                      - https://git.uwaterloo.ca/p5cai/netstack-exp/-/raw/master/kernel-polling-5.15.79-mlx4.patch?ref_type=heads
-                                      - /home/work/mlx4-driver.patch
-
-                  - get_netstack_conf:
-                            - download_file_in:
-                                      - http://public.nancy.grid5000.fr/~ayanovsk/dont-throw-the-stack/netstack-config.patch
-                                      - /home/work/netstack-config.patch
-
-                  - get_before_work:
-                            - download_file_in:
-                                      - http://public.nancy.grid5000.fr/~ayanovsk/dont-throw-the-stack/before-work.sh
-                                      - /home/work/before-work.sh
         - general_dep:
                   - install_dep:
                             - exec_in: >
@@ -88,8 +64,6 @@ setup:
                             # dpdk/mlx
                             - exec_in: >
                                       DEBIAN_FRONTEND=noninteractive  apt-get install -y ibverbs-providers libibverbs-dev
-                            #     - exec_in: >
-                            #               DEBIAN_FRONTEND=noninteractive apt install -y linux-image-5.15.0-79-generic
         - ssh-accept-new:
                   - ssh_accept_new:
                             - exec_in: |
@@ -122,16 +96,6 @@ setup:
                                       ./autogen.sh
                                       ./configure
                                       make -j $(nproc)
-                    #       - breakpoint: "check memcached"
-
-        - install_memcached:
-                  - compile:
-                            - exec_in: |
-                                      git clone https://github.com/memcached/memcached.git -b 1.6.9 /home/work/memcached
-                                      cd /home/work/memcached
-                                      ./autogen.sh
-                                      ./configure
-                                      make -j $(nproc)
 
         - caladan:
                   - compile:
@@ -139,35 +103,24 @@ setup:
                                       apt install -y make gcc cmake pkg-config libnl-3-dev libnl-route-3-dev libnuma-dev uuid-dev libssl-dev libaio-dev libcunit1-dev libclang-dev libncurses-dev meson python3-pyelftools
                                       git clone https://github.com/shenango/caladan.git /home/work/caladan
                                       cd /home/work/caladan
-                                      # because after that they introduce uintr and we dont want in our case
-                                      git checkout ed67045
+                                      git checkout 6ce84e0
                                       make submodules
                                       make clean
-                                      CONFIG_MLX5=y make
+                                      make CONFIG_MLX5=y CONFIG_SPDK=y
                                       pushd ksched
                                       make clean
                                       make
-                    #       - breakpoint: "check memcached"
-        - memcached-caladan:
-                  - compile:
-                            - exec_in: |
-                                      git clone https://github.com/shenango/memcached.git -b caladan /home/work/memcached-caladan
-                                      cd /home/work/memcached-caladan
-                                      ./autogen.sh
-                                      ./configure --with-shenango=/home/work/caladan
-                                      make -j $(nproc)
-
-        - get_experiences:
-                  - get_repo:
-                            - exec_in: |
-                                      git clone https://git.uwaterloo.ca/p5cai/netstack-exp.git /home/work/netstack-exp
-                                      cd /home/work/netstack-exp 
-                                      git apply /home/work/netstack-config.patch
-        - install_linux_tools:
-                  - get_linux_repo:
-                            - exec_in: |
-                                      wget https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.15.79.tar.xz -O /home/work/linux-5.15.79.tar.xz
-                                      tar -xf /home/work/linux-5.15.79.tar.xz -C /home/work
+        # FIX: there something wrong with newer version of caladan,
+        # memcached-caladan is not finding what it needs when giving --with-shenango
+        # clue is m4/ax_shenango.m4
+        # - memcached-caladan:
+        #           - compile:
+        #                     - exec_in: |
+        #                               git clone https://github.com/shenango/memcached.git -b caladan /home/work/memcached-caladan
+        #                               cd /home/work/memcached-caladan
+        #                               ./autogen.sh
+        #                               ./configure --with-shenango=/home/work/caladan
+        #                               make -j $(nproc)
 
 export:
         ### The export section takes in charge the export of your customized Grid'5000

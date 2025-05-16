@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SITES="lille nancy strasbourg rennes nantes bordeaux lyon toulouse grenoble sophia"
-ENVIRONMENTS="mutilate-environment environment environment-caladan"
+
 function retrieve_repo() {
     # this function will get the repo and setup everything needed in precised
     # grid5000 site
@@ -17,7 +17,6 @@ function retrieve_repo() {
     fi
     ln -s ~/public/dont-throw-the-stack/environment.yaml environment.yaml
     ln -s ~/public/dont-throw-the-stack/mutilate-environment.yaml mutilate-environment.yaml
-    ln -s ~/public/dont-throw-the-stack/environment-caladan.yaml environment-caladan.yaml
 }
 
 function build_environment() {
@@ -34,6 +33,7 @@ function build_environment() {
     retrieve_repo
 
     oarsub -I
+    sudo-g5k apt install kameleon=2.10.11.1
     kameleon repository add grid5000 https://gitlab.inria.fr/grid5000/environments-recipes.git
     kameleon repository update grid5000
     kameleon template import grid5000/ubuntu2204-x64-common
@@ -45,7 +45,6 @@ function build_environment() {
 EOF
 }
 
-ENV_NAME="mutilate-environment"
 if [ -z $1 ]; then
     echo "Please provide the grid5000 site"
     exit 1
@@ -60,10 +59,6 @@ if [[ $SITES != *"$1"* ]]; then
     exit 1
 fi
 
-if [[ $ENVIRONMENTS != *"$2"* ]]; then
-    echo "Please provide a valid environment name ($ENVIRONMENTS)"
-    exit 1
-fi
 
 GRID5000_SITE=$1
 ENV_NAME=$2
