@@ -46,10 +46,10 @@ fi
 
 case $ENV in
     caladan)
-        ~/public/dont-throw-the-stack/start/update_caladan_conf.sh $EXP_NODE /home/work/netstack-exp/caladan.config
+        $PATH_REPO/start/update_caladan_conf.sh $EXP_NODE /home/work/caladan/server.config
         ;;
     fstack)
-        ~/public/dont-throw-the-stack/start/update_fstack_conf.sh $EXP_NODE /home/work/netstack-exp/f-stack.conf
+        $PATH_REPO/start/update_fstack_conf.sh $EXP_NODE /home/work/f-stack/f-stack.conf
         ;;
     *)
         echo "Please provide a valid environment name (environment or environment-caladan)"

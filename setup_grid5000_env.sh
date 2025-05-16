@@ -33,13 +33,12 @@ function build_environment() {
     retrieve_repo
 
     oarsub -I
-    sudo-g5k apt install -y --allow-downgrades kameleon=2.10.11.1
-    kameleon repository add grid5000 https://gitlab.inria.fr/grid5000/environments-recipes.git
-    kameleon repository update grid5000
-    kameleon template import grid5000/ubuntu2204-x64-common
-    kameleon template import grid5000/ubuntu2004-x64-common
-
-    kameleon build $ENV_NAME.yaml
+    sudo-g5k apt install -y --allow-downgrades kameleon=2.10.11.1 && \
+    kameleon repository add grid5000 https://gitlab.inria.fr/grid5000/environments-recipes.git  && \
+    kameleon repository update grid5000  && \
+    kameleon template import grid5000/ubuntu2204-x64-common  && \
+    kameleon template import grid5000/ubuntu2004-x64-common  && \
+    kameleon build $ENV_NAME.yaml  && \
     sed -i 's|server:///path/to/your/image|local:///home/ayanovsk/build/$ENV_NAME/$ENV_NAME.tar.zst|' build/$ENV_NAME/$ENV_NAME.dsc
     exit
 EOF
