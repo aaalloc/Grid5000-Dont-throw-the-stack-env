@@ -13,7 +13,7 @@ function retrieve_repo() {
     if [ -d ~/public/dont-throw-the-stack ]; then
         git -C ~/public/dont-throw-the-stack pull
     else
-        git clone $REPO_URL ~/public/dont-throw-the-stack
+        git clone $REPO_URL -b simple-kernel-bypass-deployment ~/public/dont-throw-the-stack
     fi
     ln -s ~/public/dont-throw-the-stack/environment.yaml environment.yaml
     ln -s ~/public/dont-throw-the-stack/mutilate-environment.yaml mutilate-environment.yaml
@@ -33,7 +33,7 @@ function build_environment() {
     retrieve_repo
 
     oarsub -I
-    sudo-g5k apt install kameleon=2.10.11.1
+    sudo-g5k apt install -y kameleon=2.10.11.1
     kameleon repository add grid5000 https://gitlab.inria.fr/grid5000/environments-recipes.git
     kameleon repository update grid5000
     kameleon template import grid5000/ubuntu2204-x64-common

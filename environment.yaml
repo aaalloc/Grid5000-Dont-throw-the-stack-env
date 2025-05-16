@@ -106,7 +106,7 @@ setup:
                                       git checkout 6ce84e0
                                       make submodules
                                       make clean
-                                      make CONFIG_MLX5=y CONFIG_SPDK=y
+                                      make -j $(nproc) CONFIG_MLX5=y CONFIG_SPDK=y
                                       pushd ksched
                                       make clean
                                       make
