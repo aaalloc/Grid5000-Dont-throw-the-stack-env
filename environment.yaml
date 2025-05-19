@@ -55,6 +55,10 @@ setup:
                   - create_home:
                             - exec_in: >
                                       mkdir /home/work
+                  - get_before_work:
+                            - download_file_in:
+                                      - http://public.grenoble.grid5000.fr/~ayanovsk/caladan-spdk-dpdk.patch
+                                      - /home/work/caladan-spdk-dpdk.patch
         - general_dep:
                   - install_dep:
                             - exec_in: >
@@ -104,6 +108,7 @@ setup:
                                       git clone https://github.com/shenango/caladan.git /home/work/caladan
                                       cd /home/work/caladan
                                       git checkout 6ce84e0
+                                      git apply /home/work/caladan-spdk-dpdk.patch
                                       make submodules
                                       make clean
                                       make -j $(nproc) CONFIG_MLX5=y CONFIG_SPDK=y
