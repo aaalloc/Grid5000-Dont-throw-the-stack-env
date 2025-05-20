@@ -41,9 +41,11 @@ function build_environment() {
     source .env && \
     kameleon repository add grid5000 https://gitlab.inria.fr/grid5000/environments-recipes.git  && \
     kameleon repository update grid5000  && \
+    kameleon template import grid5000/debian12-x64-big  && \
     kameleon template import grid5000/ubuntu2404-x64-common  && \
     kameleon template import grid5000/ubuntu2204-x64-common  && \
     kameleon template import grid5000/ubuntu2004-x64-common  && \
+
     kameleon build --global git_token:$GIT_TOKEN $ENV_NAME.yaml  && \
     sed -i 's|server:///path/to/your/image|local:///home/ayanovsk/build/$ENV_NAME/$ENV_NAME.tar.zst|' build/$ENV_NAME/$ENV_NAME.dsc
     exit
