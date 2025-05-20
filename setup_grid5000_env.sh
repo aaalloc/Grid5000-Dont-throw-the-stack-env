@@ -27,7 +27,11 @@ function build_environment() {
     ENV_NAME=$2
 
     # TODO: fix hardcoded values of name
-
+    GIT_TOKEN=$(ssh $GRID5000_SITE "cat .env" | grep -E 'GIT_TOKEN' | cut -d '=' -f2)
+    if [ -z $GIT_TOKEN ]; then
+        echo "Please provide a git token in the .env file"
+        exit 1
+    fi
     ssh -tt $GRID5000_SITE << EOF
     $(typeset -f retrieve_repo)
     retrieve_repo
@@ -40,7 +44,7 @@ function build_environment() {
     kameleon template import grid5000/ubuntu2404-x64-common  && \
     kameleon template import grid5000/ubuntu2204-x64-common  && \
     kameleon template import grid5000/ubuntu2004-x64-common  && \
-    kameleon build --global git_token:${GIT_TOKEN} $ENV_NAME.yaml  && \
+    kameleon build --global git_token:$GIT_TOKEN $ENV_NAME.yaml  && \
     sed -i 's|server:///path/to/your/image|local:///home/ayanovsk/build/$ENV_NAME/$ENV_NAME.tar.zst|' build/$ENV_NAME/$ENV_NAME.dsc
     exit
 EOF
