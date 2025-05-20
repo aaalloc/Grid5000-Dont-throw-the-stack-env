@@ -16,11 +16,11 @@ case "$1" in
         echo "Set default value to caladan"
         ENV=caladan
         ;;
-    caladan|fstack)
+    caladan)
         ENV=$1
         ;;
     *)
-        echo "Please provide a valid environment name (caladan, fstack)"
+        echo "Only caladan environment is supported"
         exit 1
         ;;
 esac
@@ -39,17 +39,14 @@ NODES=$(cat $CLIENTS_NODES_PATH | tr "," "\n")
 paste -sd, $CLIENTS_NODES_PATH  | ssh root@$EXP_NODE "cat > /home/work/mutilate_nodes"
 
 $PATH_REPO/start/update_ssh_exp.sh $EXP_NODE "${NODES}"
-if [ $ENV == "fstack" ] || [ $ENV == "caladan" ]; then
+if [ $ENV == "caladan" ]; then
     $PATH_REPO/start/update_interfaces.sh $EXP_NODE
 fi
 
 
 case $ENV in
     caladan)
-        $PATH_REPO/start/update_caladan_conf.sh $EXP_NODE /home/work/caladan/server.config
-        ;;
-    fstack)
-        $PATH_REPO/start/update_fstack_conf.sh $EXP_NODE /home/work/f-stack/f-stack.conf
+        $PATH_REPO/start/update_caladan_conf.sh $EXP_NODE /caladan/server.conf
         ;;
     *)
         echo "Please provide a valid environment name (environment or environment-caladan)"

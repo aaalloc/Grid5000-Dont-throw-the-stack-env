@@ -12,11 +12,11 @@ function retrieve_repo() {
 
     if [ -d ~/public/dont-throw-the-stack ]; then
         git -C ~/public/dont-throw-the-stack pull
+        git checkout simple-kernel-bypass-deployment
     else
         git clone $REPO_URL -b simple-kernel-bypass-deployment ~/public/dont-throw-the-stack
     fi
-    ln -s ~/public/dont-throw-the-stack/environment.yaml environment.yaml
-    ln -s ~/public/dont-throw-the-stack/mutilate-environment.yaml mutilate-environment.yaml
+    ln -s ~/public/dont-throw-the-stack/caladan.yaml caladan.yaml
 }
 
 function build_environment() {
@@ -34,11 +34,13 @@ function build_environment() {
 
     oarsub -I
     sudo-g5k apt install -y --allow-downgrades kameleon=2.10.11.1 && \
+    source .env && \
     kameleon repository add grid5000 https://gitlab.inria.fr/grid5000/environments-recipes.git  && \
     kameleon repository update grid5000  && \
+    kameleon template import grid5000/ubuntu2404-x64-common  && \
     kameleon template import grid5000/ubuntu2204-x64-common  && \
     kameleon template import grid5000/ubuntu2004-x64-common  && \
-    kameleon build $ENV_NAME.yaml  && \
+    kameleon build --global git_token:${GIT_TOKEN} $ENV_NAME.yaml  && \
     sed -i 's|server:///path/to/your/image|local:///home/ayanovsk/build/$ENV_NAME/$ENV_NAME.tar.zst|' build/$ENV_NAME/$ENV_NAME.dsc
     exit
 EOF
