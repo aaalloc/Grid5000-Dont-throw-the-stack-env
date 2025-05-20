@@ -1,0 +1,79 @@
+#==============================================================================
+#
+# DESCRIPTION: Recipe extending a Grid'5000 environment recipe supported by
+# the technical team. The build will be similar to the one of the supported
+# environments, involving puppet notably.
+#
+#==============================================================================
+# This recipe extends another. To look at the step involed, run:
+#   kameleon build -d ubuntu2204-dont-throw-the-stack.yaml
+# To see the variables that you can override, use the following command:
+#   kameleon info ubuntu2204-dont-throw-the-stack.yaml
+---
+extend: grid5000/ubuntu2404-x64-common.yaml
+
+global:
+        git_token: ""
+        git_repository: "gitlab.com/anguetoum/motivation_app"
+        ### Uncomment and adapt the global variables below as needed
+
+        ## Export format to generate
+        # appliance_formats: qcow2 tar.zst
+
+        ## Environment description customization
+        ## Author
+        # g5k_author: "john.doe@grid5000.fr"
+        ## Version
+        # g5k_version: 1
+        ## Environment image path and compression
+        # g5k_tar_path: local:///path/to/your/image
+        # g5k_tar_compression: "zstd"
+        ## Environment postinstall path, compression, and script command
+        # g5k_postinst_path: server:///grid5000/postinstalls/g5k-postinstall.tgz
+        # g5k_postinst_compression: "gzip"
+        # g5k_postinst_script: g5k-postinstall --net debian
+        ## Environment kernel path and params
+        # g5k_kernel_path: "/vmlinuz"
+        # g5k_initrd_path: "/initrd.img"
+        g5k_kernel_params: "modprobe.blacklist=nouveau,mitigations=off"
+        ## Environment visibility
+        # g5k_visibility: "shared"
+
+        ## Other parameters can be changed, see kameleon info ubuntu2204-dont-throw-the-stack.yaml
+
+bootstrap:
+        ### The bootstrap section takes in charge the initial installation of the
+        ## system (distribution installation). No modification should be needed here.
+        - "@base"
+
+setup:
+        - "@base"
+        - general_dep:
+                  - install_dep:
+                            - exec_in: >
+                                      apt-get update
+                            - exec_in: >
+                                      DEBIAN_FRONTEND=noninteractive apt-get install -y systemd-timesyncd ethtool pkg-config git pdsh net-tools kexec-tools libpci-dev pciutils gettext libelf-dev flex fakeroot bc ncurses-dev xz-utils build-essential wget libssl-dev python3-pip autotools-dev automake bison
+                            # dpdk/mlx
+                            - exec_in: >
+                                      DEBIAN_FRONTEND=noninteractive  apt-get install -y ibverbs-providers libibverbs-dev
+        - ssh-accept-new:
+                  - ssh_accept_new:
+                            - exec_in: |
+                                      echo "StrictHostKeyChecking=accept-new" >> /etc/ssh/ssh_config
+
+        - caladan:
+                  - compile:
+                            - exec_in: |
+                                      apt install -y make gcc cmake pkg-config libnl-3-dev libnl-route-3-dev libnuma-dev uuid-dev libssl-dev libaio-dev libcunit1-dev libclang-dev libncurses-dev meson python3-pyelftools
+                                      git clone  --recursive https://grid5000:$${git_token}@$${git_repository}.git -b project
+                                      cd project/caladan
+                                      make submodules
+                                      git apply /project/caladan-spdk-dpdk.patch
+                                      cd ksched
+                                      make
+
+export:
+        ### The export section takes in charge the export of your customized Grid'5000
+        ## environment. No modification should be needed here.
+        - "@base"
