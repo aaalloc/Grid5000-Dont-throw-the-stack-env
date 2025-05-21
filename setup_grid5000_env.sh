@@ -12,7 +12,7 @@ function retrieve_repo() {
 
     if [ -d ~/public/dont-throw-the-stack ]; then
         git -C ~/public/dont-throw-the-stack pull
-        git checkout simple-kernel-bypass-deployment
+        git -C checkout simple-kernel-bypass-deployment
     else
         git clone $REPO_URL -b simple-kernel-bypass-deployment ~/public/dont-throw-the-stack
     fi
