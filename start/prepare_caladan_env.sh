@@ -5,11 +5,19 @@
 EXP_NODE=$1
 PATH_REPO=~/public/dont-throw-the-stack
 
-$PATH_REPO/start/update_omnipath_interface.sh $EXP_NODE
-IP_OPA=$(ssh root@$EXP_NODE "ip addr show | grep -o -P '^\d+: ibp\w+' | head -n 1 | awk '{print \$2}'")
 
+# retrieve IP, MASK, GATEWAY from eno1 interface
+IP_CALADAN=$(ssh root@$EXP_NODE "ip addr show eno1 | grep -o -P 'inet \d+\.\d+\.\d+\.\d+/\d+' | head -n 1 | awk '{print \$2}'")
+MASK_CALADAN=$(ssh root@$EXP_NODE "ip addr show eno1 | grep -o -P 'inet \d+\.\d+\.\d+\.\d+/\d+' | head -n 1 | awk '{print \$2}' | cut -d '/' -f 2")
+GATEWAY_CALADAN=$(ssh root@$EXP_NODE "ip route | grep default | awk '{print \$3}'")
+
+
+$PATH_REPO/start/update_omnipath_interface.sh $EXP_NODE
+$PATH_REPO/start/update_caladan_conf.sh $EXP_NODE /caladan/server.config $IP_CALADAN $MASK_CALADAN $GATEWAY_CALADAN
+
+IP_OPA=$(ssh root@$EXP_NODE "ip addr show | grep -o -P '^\d+: ibp\w+' | head -n 1 | awk '{print \$2}'")
 ssh root@$EXP_NODE "
-    cd /project/caladan
+    cd ~/project/caladan
     make submodules
     sed -i 's/#define DPDK_PORT 1/#define DPDK_PORT 0/' iokernel/dpdk.c
     make -j \$(nproc) CONFIG_SPDK=y
