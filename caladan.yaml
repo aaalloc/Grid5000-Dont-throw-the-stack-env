@@ -10,7 +10,7 @@
 # To see the variables that you can override, use the following command:
 #   kameleon info ubuntu2204-dont-throw-the-stack.yaml
 ---
-extend: grid5000/ubuntu2404-x64-min.yaml
+extend: grid5000/ubuntu2404-x64-common.yaml
 
 global:
         git_token: ""
