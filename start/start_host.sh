@@ -46,7 +46,9 @@ fi
 
 case $ENV in
     caladan)
-        $PATH_REPO/start/update_caladan_conf.sh $EXP_NODE /caladan/server.config
+        output=$(g5k-subnets -ingbm | head -n 1)
+        read -r SUBNET_ADDR SUBNET_BC SUBNET_NETMASK SUBNET_GW SUBNET_MAC <<< "$output"
+        $PATH_REPO/start/update_caladan_conf.sh $EXP_NODE /caladan/server.config $SUBNET_ADDR $SUBNET_NETMASK $SUBNET_GW
         ;;
     *)
         echo "Please provide a valid environment name (environment or environment-caladan)"
