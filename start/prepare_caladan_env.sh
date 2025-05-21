@@ -12,10 +12,9 @@ MASK_CALADAN=$(ssh root@$EXP_NODE "ip addr show eno1 | grep -o -P 'inet \d+\.\d+
 GATEWAY_CALADAN=$(ssh root@$EXP_NODE "ip route | grep default | awk '{print \$3}'")
 
 
-$PATH_REPO/start/update_omnipath_interface.sh $EXP_NODE
-$PATH_REPO/start/update_caladan_conf.sh $EXP_NODE /caladan/server.config $IP_CALADAN $MASK_CALADAN $GATEWAY_CALADAN
+IP_OPA=$($PATH_REPO/start/update_omnipath_interface.sh $EXP_NODE)
+$PATH_REPO/start/update_caladan_conf.sh $EXP_NODE /root/project/caladan/server.config $IP_CALADAN $MASK_CALADAN $GATEWAY_CALADAN
 
-IP_OPA=$(ssh root@$EXP_NODE "ip addr show | grep -o -P '^\d+: ibp\w+' | head -n 1 | awk '{print \$2}'")
 ssh root@$EXP_NODE "
     cd ~/project/caladan
     make submodules
