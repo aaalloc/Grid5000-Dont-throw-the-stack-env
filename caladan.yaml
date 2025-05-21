@@ -10,7 +10,7 @@
 # To see the variables that you can override, use the following command:
 #   kameleon info ubuntu2204-dont-throw-the-stack.yaml
 ---
-extend: grid5000/debian12-x64-big.yaml
+extend: grid5000/ubuntu2404-x64-min.yaml
 
 global:
         git_token: ""
@@ -57,6 +57,10 @@ setup:
                             # dpdk/mlx
                             - exec_in: >
                                       DEBIAN_FRONTEND=noninteractive  apt-get install -y ibverbs-providers libibverbs-dev
+                            # omni-path
+                            - exec_in: >
+                                      DEBIAN_FRONTEND=noninteractive apt-get install -y ibverbs-providers libopamgt-dev libopamgt0 libopasadb1 opa-address-resolution opa-basic-tools opa-fastfabric
+
         - ssh-accept-new:
                   - ssh_accept_new:
                             - exec_in: |
