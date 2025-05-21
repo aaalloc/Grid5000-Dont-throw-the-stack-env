@@ -8,7 +8,7 @@ PATH_REPO=~/public/dont-throw-the-stack
 
 # retrieve IP, MASK, GATEWAY from eno1 interface
 IP_CALADAN=$(ssh root@$EXP_NODE "ip addr show eno1 | grep -o -P 'inet \d+\.\d+\.\d+\.\d+/\d+' | head -n 1 | awk '{print \$2}'")
-MASK_CALADAN=$(ssh root@$EXP_NODE "ip addr show eno1 | grep -o -P 'inet \d+\.\d+\.\d+\.\d+/\d+' | head -n 1 | awk '{print \$2}' | cut -d '/' -f 2")
+MASK_CALADAN=$(ssh root@$EXP_NODE "ifconfig eno1 | awk '/netmask/ {print \$4}'")
 GATEWAY_CALADAN=$(ssh root@$EXP_NODE "ip route | grep default | awk '{print \$3}'")
 
 
